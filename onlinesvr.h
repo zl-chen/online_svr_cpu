@@ -8,11 +8,13 @@
 #include <string>
 #include <fstream>
 #include <ios>
+#include <iostream>
 
 using std::string;
 using std::vector;
 using std::ofstream;
 using std::ios;
+using namespace std;
 
 class OnlineSVR{
 public:
@@ -25,13 +27,15 @@ public:
 
         numSamplesTrained += 1;
 
-        printf("\n############%d################\n",numSamplesTrained);
+        
 
+        printf("\n############%d################\n",numSamplesTrained);
         X.push_back(x);
         Y.push_back(y);
         weights.push_back(0);
 
         vector<double> H = computeMargin(X,Y);
+        cout << "after margin " << endl;
         if(abs(H[numSamplesTrained-1])  <= eps ){
             printf("第%d个样本加入R集合，由于eps\n",numSamplesTrained);
             remainderSetIndices.push_back(numSamplesTrained-1);
@@ -51,11 +55,14 @@ public:
 
             vector<vector<double>> beta,gamma;
             computeBetaGamma(numSamplesTrained-1,beta,gamma);
+            cout << "after beta" << endl;
 
             double deltaC;
             int flag;
             int minIndex;
             findMinVariation(H,beta,gamma,numSamplesTrained-1,deltaC,flag,minIndex);
+
+            cout << "after find" << endl;
 
             if(supportSetIndices.size() > 0 && beta.size() > 0){
                 weights[numSamplesTrained-1] += deltaC;
@@ -769,6 +776,8 @@ public:
     }
 
     vector<vector<double>> computeKernelOutput(vector<vector<double>> set1,vector<vector<double>> set2){
+
+        cout << "s1size: " << set1.size() << "   s2size:" << set2.size() << endl;
         vector<vector<double>> result;
         for(int i=0;i<set1.size();++i){
             vector<double> curV;
